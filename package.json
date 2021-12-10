@@ -2,7 +2,7 @@
   "name": "common-ax",
   "version": "1.0.0",
   "description": "Common Ax, son utilidades comunes para proyectos TypeScript o Javascript.",
-  "main": "app.ts",
+  "main": "dist/app.js",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
