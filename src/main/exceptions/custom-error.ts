@@ -3,13 +3,15 @@ export class CustomError extends Error {
     public message: string;
     public httpStatus: number | undefined;
     public errors: any[] = [];
+    public headers: any;
 
-    constructor(message: string, code?: string, httpStatus?: number) {
+    constructor(message: string, code?: string, httpStatus?: number, headers?: any) {
         super(message);
         this.name = "CustomError";
         this.message = message;
         this.code = code;
         this.httpStatus = httpStatus;
+        this.headers = headers || {};
     }
 
     addError(error: Error) {
@@ -22,7 +24,10 @@ export class CustomError extends Error {
             this.errors.forEach((error: Error) => errors1.push({ message: error.message }));
             return {
                 statusCode: this.httpStatus,
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...this.headers
+                },
                 body: JSON.stringify({
                     "code": this.code,
                     "message": errors1
@@ -31,7 +36,10 @@ export class CustomError extends Error {
         }
         return {
             statusCode: this.httpStatus,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...this.headers
+            },
             body: JSON.stringify({
                 "code": this.code,
                 "message": this.message

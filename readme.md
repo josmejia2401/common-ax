@@ -31,7 +31,7 @@ Es una librería que define varios utilidades comunes en proyectos TypeScript (T
     Un objeto compatible con DynamoDb. Este objeto puede ser usado para buscar registros en una tabla.
 
 ## Nuevas Características y/o cambios
-- Compatibilidad con aws dynamodb v3.
+- Mejoras en custom-error, ahora permite headers
 
 ## Instalación
 Se requiere tener instalado [Node.js](https://nodejs.org/) v7+ para ejecutar.

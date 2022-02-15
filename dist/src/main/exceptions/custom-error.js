@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomError = void 0;
 class CustomError extends Error {
-    constructor(message, code, httpStatus) {
+    constructor(message, code, httpStatus, headers) {
         super(message);
         this.errors = [];
         this.name = "CustomError";
         this.message = message;
         this.code = code;
         this.httpStatus = httpStatus;
+        this.headers = headers || {};
     }
     addError(error) {
         this.errors.push(error);
@@ -19,7 +20,10 @@ class CustomError extends Error {
             this.errors.forEach((error) => errors1.push({ message: error.message }));
             return {
                 statusCode: this.httpStatus,
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...this.headers
+                },
                 body: JSON.stringify({
                     "code": this.code,
                     "message": errors1
@@ -28,7 +32,10 @@ class CustomError extends Error {
         }
         return {
             statusCode: this.httpStatus,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...this.headers
+            },
             body: JSON.stringify({
                 "code": this.code,
                 "message": this.message
