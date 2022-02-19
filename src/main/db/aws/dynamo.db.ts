@@ -23,6 +23,9 @@ export class DynamoDb implements BaseDB {
     }
 
     connect(): DynamoDBClient {
+        if (this.connection) {
+            return this.connection;
+        }
         if (this.config && this.config.aws && this.config.aws.dynamodb && GeneralValidation.isEmpty(this.config.aws.dynamodb.region) === false) {
             this.connection = new DynamoDBClient({ region: this.config.aws.dynamodb.region });
         } else {

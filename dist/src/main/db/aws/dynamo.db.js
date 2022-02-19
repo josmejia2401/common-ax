@@ -19,6 +19,9 @@ class DynamoDb {
         return DynamoDb.instance;
     }
     connect() {
+        if (this.connection) {
+            return this.connection;
+        }
         if (this.config && this.config.aws && this.config.aws.dynamodb && general_validations_1.GeneralValidation.isEmpty(this.config.aws.dynamodb.region) === false) {
             this.connection = new client_dynamodb_1.DynamoDBClient({ region: this.config.aws.dynamodb.region });
         }
