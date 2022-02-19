@@ -34,11 +34,7 @@ class OperationDDL {
     update(tableName, payload) {
         return new Promise((resolve, reject) => {
             try {
-                const params = {
-                    TableName: tableName,
-                    ReturnValues: "UPDATED_NEW",
-                    ...payload
-                };
+                const params = Object.assign({ TableName: tableName, ReturnValues: "UPDATED_NEW" }, payload);
                 this.connection.send(new UpdateItemCommand(params), (err, data) => {
                     if (err) {
                         reject(err);
@@ -57,10 +53,7 @@ class OperationDDL {
     delete(tableName, payload) {
         return new Promise((resolve, reject) => {
             try {
-                const params = {
-                    TableName: tableName,
-                    ...payload
-                };
+                const params = Object.assign({ TableName: tableName }, payload);
                 this.connection.send(new DeleteItemCommand(params), (err, data) => {
                     if (err) {
                         reject(err);
@@ -79,10 +72,7 @@ class OperationDDL {
     getById(tableName, payload) {
         return new Promise((resolve, reject) => {
             try {
-                const params = {
-                    TableName: tableName,
-                    ...payload
-                };
+                const params = Object.assign({ TableName: tableName }, payload);
                 this.connection.send(new QueryCommand(params), (err, data) => {
                     if (err) {
                         reject(err);

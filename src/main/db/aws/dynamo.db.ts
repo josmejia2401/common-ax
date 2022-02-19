@@ -7,8 +7,8 @@ import { GeneralValidation } from "../../validations/general.validations";
 export class DynamoDb implements BaseDB {
     private static instance: any;
     protected config: any;
-    private connection: DynamoDBClient;
-    private operationDDL: OperationDDL;
+    private connection: DynamoDBClient = null as any;
+    private operationDDL: OperationDDL = null as any;
 
     private constructor(config: any = null) {
         this.config = config;

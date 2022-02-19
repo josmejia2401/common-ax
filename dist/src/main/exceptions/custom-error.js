@@ -20,10 +20,7 @@ class CustomError extends Error {
             this.errors.forEach((error) => errors1.push({ message: error.message }));
             return {
                 statusCode: this.httpStatus,
-                headers: {
-                    "Content-Type": "application/json",
-                    ...this.headers
-                },
+                headers: Object.assign({ "Content-Type": "application/json" }, this.headers),
                 body: JSON.stringify({
                     "code": this.code,
                     "message": errors1
@@ -32,10 +29,7 @@ class CustomError extends Error {
         }
         return {
             statusCode: this.httpStatus,
-            headers: {
-                "Content-Type": "application/json",
-                ...this.headers
-            },
+            headers: Object.assign({ "Content-Type": "application/json" }, this.headers),
             body: JSON.stringify({
                 "code": this.code,
                 "message": this.message

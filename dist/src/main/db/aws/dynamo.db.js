@@ -7,6 +7,8 @@ const general_validations_1 = require("../../validations/general.validations");
 // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/loading-node-credentials-shared.html
 class DynamoDb {
     constructor(config = null) {
+        this.connection = null;
+        this.operationDDL = null;
         this.config = config;
     }
     static getInstance(config = {}) {
