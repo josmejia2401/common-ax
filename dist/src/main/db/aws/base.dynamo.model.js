@@ -6,47 +6,50 @@ class BaseModel {
         const out = {};
         const currentAsJson = JSON.parse(JSON.stringify(this));
         const keys = Object.keys(currentAsJson);
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            const value = currentAsJson[key] || currentAsJson[`${key}`];
-            if (value === undefined || value === null || value === "") {
-                continue;
-            }
-            const typeOf = typeof key;
-            switch (typeOf) {
-                case "string":
-                    out[key] = {
-                        "S": `${value}`
-                    };
-                    break;
-                case "number":
-                    out[key] = {
-                        "N": `${value}`
-                    };
-                    break;
-                case "boolean":
-                    out[key] = {
-                        "BOOL": `${value}`
-                    };
-                    break;
-                default:
-                    out[key] = {
-                        "S": `${value}`
-                    };
+        if (currentAsJson && keys.length > 0) {
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const value = currentAsJson[key] || currentAsJson[`${key}`];
+                if (value === undefined || value === null || value === "") {
+                    continue;
+                }
+                const typeOf = typeof key;
+                switch (typeOf) {
+                    case "string":
+                        out[key] = {
+                            "S": `${value}`
+                        };
+                        break;
+                    case "number":
+                        out[key] = {
+                            "N": `${value}`
+                        };
+                        break;
+                    case "boolean":
+                        out[key] = {
+                            "BOOL": `${value}`
+                        };
+                        break;
+                    default:
+                        out[key] = {
+                            "S": `${value}`
+                        };
+                }
             }
         }
         return out;
     }
     toQuery() {
-        const obj = this.toObject();
-        let keyConditionExpression = "";
-        const expressionAttributeValues = {};
-        const expressionAttributeNames = {};
-        if (obj) {
-            const keys = Object.keys(obj);
+        const object = this.toObject();
+        const params = {};
+        const keys = Object.keys(object);
+        if (object && keys.length > 0) {
+            let keyConditionExpression = "";
+            const expressionAttributeValues = {};
+            const expressionAttributeNames = {};
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                const value = obj[key] || obj[`${key}`];
+                const value = object[key] || object[`${key}`];
                 if (value === undefined || value === null || value === "") {
                     continue;
                 }
@@ -59,24 +62,23 @@ class BaseModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
+            params["KeyConditionExpression"] = keyConditionExpression;
+            params["ExpressionAttributeValues"] = expressionAttributeValues;
+            params["ExpressionAttributeNames"] = expressionAttributeNames;
         }
-        const params = {
-            KeyConditionExpression: keyConditionExpression,
-            ExpressionAttributeValues: expressionAttributeValues,
-            ExpressionAttributeNames: expressionAttributeNames,
-        };
         return params;
     }
     toScan(conditional = 'and') {
-        const obj = this.toObject();
-        let filterExpresion = "";
-        const expressionAttributeValues = {};
-        const expressionAttributeNames = {};
-        if (obj) {
-            const keys = Object.keys(obj);
+        const object = this.toObject();
+        const params = {};
+        const keys = Object.keys(object);
+        if (object && keys.length > 0) {
+            let filterExpresion = "";
+            const expressionAttributeValues = {};
+            const expressionAttributeNames = {};
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                const value = obj[key] || obj[`${key}`];
+                const value = object[key] || object[`${key}`];
                 if (value === undefined || value === null || value === "") {
                     continue;
                 }
@@ -89,24 +91,23 @@ class BaseModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
+            params["FilterExpression"] = filterExpresion;
+            params["ExpressionAttributeValues"] = expressionAttributeValues;
+            params["ExpressionAttributeNames"] = expressionAttributeNames;
         }
-        const params = {
-            FilterExpression: filterExpresion,
-            ExpressionAttributeValues: expressionAttributeValues,
-            ExpressionAttributeNames: expressionAttributeNames,
-        };
         return params;
     }
     toUpdate() {
-        const obj = this.toObject();
-        const expressionAttributeValues = {};
-        const expressionAttributeNames = {};
-        let updateExpression = "";
-        if (obj) {
-            const keys = Object.keys(obj);
+        const object = this.toObject();
+        const params = {};
+        const keys = Object.keys(object);
+        if (object && keys.length > 0) {
+            const expressionAttributeValues = {};
+            const expressionAttributeNames = {};
+            let updateExpression = "";
             for (let i = 0; i < keys.length; i++) {
                 const key = keys[i];
-                const value = obj[key] || obj[`${key}`];
+                const value = object[key] || object[`${key}`];
                 if (value === undefined || value === null || value === "") {
                     continue;
                 }
@@ -122,13 +123,22 @@ class BaseModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
+            params["Key"] = { "id": object.id };
+            params["UpdateExpression"] = `set ${updateExpression}`;
+            params["ExpressionAttributeValues"] = expressionAttributeValues;
+            params["ExpressionAttributeNames"] = expressionAttributeNames;
         }
-        const params = {
-            Key: { "id": obj.id },
-            UpdateExpression: `set ${updateExpression}`,
-            ExpressionAttributeValues: expressionAttributeValues,
-            ExpressionAttributeNames: expressionAttributeNames,
-        };
+        return params;
+    }
+    toDelete() {
+        const object = this.toObject();
+        const params = {};
+        const keys = Object.keys(object);
+        if (object && keys.length > 0) {
+            //params["ConditionExpression"] = "rating <= :val";
+            //params["ExpressionAttributeValues"] = { ":val": 5.0 };
+            params["Key"] = object;
+        }
         return params;
     }
 }
