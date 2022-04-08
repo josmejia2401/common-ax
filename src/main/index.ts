@@ -1,7 +1,8 @@
 export * from './db/db';
-export * from './db/aws/base.dynamo.model';
-export * from './db/aws/dynamo.db';
-export * from './db/aws/operations.db';
+export * from './db/dynamodb/model';
+export * from './db/dynamodb/db';
+export * from './db/dynamodb/operations';
+export * from './db/mongo/db';
 //Dependency injection
 export * from './di/di';
 //Exceptions

@@ -1,16 +1,12 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 const { PutItemCommand, QueryCommand, ScanCommand, DeleteItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
-
-/**
- * Operaciones compatibles con la V3 de AWS.
- */
-export class OperationDDL {
-
-    protected connection: any;
-    constructor(connection: any) {
+import { OperationDB } from '../db';
+export class OperationsDynamoDB implements OperationDB {
+    protected connection: DynamoDBClient;
+    constructor(connection: DynamoDBClient) {
         this.connection = connection;
     }
-
-    insert(tableName: string, payload: any) {
+    insert(tableName: string, payload: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
@@ -28,9 +24,8 @@ export class OperationDDL {
                 reject(error);
             }
         });
-    };
-
-    update(tableName: string, payload: any) {
+    }
+    update(tableName: string, payload: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
@@ -49,9 +44,8 @@ export class OperationDDL {
                 reject(error);
             }
         });
-    };
-
-    delete(tableName: string, payload: any) {
+    }
+    delete(tableName: string, payload: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
@@ -69,9 +63,8 @@ export class OperationDDL {
                 reject(error);
             }
         });
-    };
-
-    getById(tableName: string, payload: any): Promise<any[]> {
+    }
+    findById(tableName: string, payload: any): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
@@ -100,16 +93,15 @@ export class OperationDDL {
                                 result.push(out);
                             }
                         }
-                        resolve(result);
+                        resolve(result[0]);
                     }
                 });
             } catch (error) {
                 reject(error);
             }
         });
-    };
-
-    getByFilter(tableName: string, payload: any): Promise<any[]> {
+    }
+    find(tableName: string, payload: any): Promise<any[]> {
         return new Promise((resolve, reject) => {
             try {
                 payload.TableName = tableName;
@@ -142,9 +134,8 @@ export class OperationDDL {
                 reject(error);
             }
         });
-    };
-
-    getAll(tableName: string) {
+    }
+    findAll(tableName: string): Promise<any[]> {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
@@ -179,5 +170,5 @@ export class OperationDDL {
                 reject(error);
             }
         });
-    };
+    }
 }

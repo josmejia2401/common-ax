@@ -1,6 +1,6 @@
 {
   "name": "common-ax",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Common Ax, son utilidades comunes para proyectos TypeScript o Javascript.",
   "main": "dist/app.js",
   "types": "dist/app.d.ts",
@@ -60,7 +60,8 @@
     "tslint": "^6.1.3",
     "@types/node": "16.11.12",
     "@aws-sdk/client-dynamodb": "3.52.0",
-    "@types/uuid": "^8.3.3"
+    "@types/uuid": "^8.3.3",
+    "mongodb": "4.5.0"
   },
   "devDependencies": {}
 }

@@ -1,6 +1,5 @@
 'use strict';
-export class BaseModel {
-
+export class DynamoDBModel {
     toObject() {
         const out: any = {};
         const currentAsJson = JSON.parse(JSON.stringify(this));
@@ -29,6 +28,11 @@ export class BaseModel {
                             "BOOL": `${value}`
                         }
                         break;
+                    case "object":
+                        out[key] = {
+                            "B": `${value}`
+                        }
+                        break;
                     default:
                         out[key] = {
                             "S": `${value}`
@@ -38,7 +42,6 @@ export class BaseModel {
         }
         return out;
     }
-
     toQuery() {
         const object = this.toObject();
         const params = {} as any;
@@ -67,7 +70,6 @@ export class BaseModel {
         }
         return params;
     }
-
     toScan(conditional: string = 'and') {
         const object = this.toObject();
         const params = {} as any;
@@ -96,7 +98,6 @@ export class BaseModel {
         }
         return params;
     }
-
     toUpdate() {
         const object = this.toObject();
         const params = {} as any;
@@ -130,7 +131,6 @@ export class BaseModel {
         }
         return params;
     }
-
     toDelete() {
         const object = this.toObject();
         const params = {} as any;
@@ -142,8 +142,7 @@ export class BaseModel {
         }
         return params;
     }
-};
-
+}
 export interface MetadataDynamoResponse {
     $metadata: {
         httpStatusCode: number;

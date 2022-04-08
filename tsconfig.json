@@ -36,7 +36,7 @@
     "include": [
         "src/**/*",
         "handlers/*",
-        "app.ts"
+        "app.ts", "src/main/db/mongo/.db.ts"
     ],
     "typeRoots": [
         "./node_modules/@types"

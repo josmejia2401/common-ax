@@ -11,9 +11,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./db/db"), exports);
-__exportStar(require("./db/aws/base.dynamo.model"), exports);
-__exportStar(require("./db/aws/dynamo.db"), exports);
-__exportStar(require("./db/aws/operations.db"), exports);
+__exportStar(require("./db/dynamodb/model"), exports);
+__exportStar(require("./db/dynamodb/db"), exports);
+__exportStar(require("./db/dynamodb/operations"), exports);
+__exportStar(require("./db/mongo/db"), exports);
 //Dependency injection
 __exportStar(require("./di/di"), exports);
 //Exceptions
