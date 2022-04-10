@@ -15,3 +15,4 @@ export * from './utils/token.utils';
 //Validations
 export * from './validations/general.validations';
 export * from './validations/object.validations';
+export * from './validations/model.validations';

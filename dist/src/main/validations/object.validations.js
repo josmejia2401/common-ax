@@ -59,6 +59,62 @@ class ObjectValidation {
         }
         return isValid;
     }
+    static objectValidateWithModel(obj, model) {
+        if (general_validations_1.GeneralValidation.isEmpty(obj)) {
+            return;
+        }
+        if (Array.isArray(obj)) {
+            return ObjectValidation.objectValidateWithArray(obj, model);
+        }
+        const keys = Object.keys(obj);
+        const fields = Object.keys(model);
+        const out = {};
+        const error = new custom_error_1.CustomError(``, "NOT_FOUND", 404);
+        for (let i = 0; i < fields.length; i++) {
+            const field = fields[i];
+            if (keys.includes(field) === false) {
+                error.addError(new Error(`The field ${field} not found`));
+                continue;
+            }
+            const fieldValue = obj[field] || obj[`${field}`];
+            if (fieldValue === undefined || fieldValue === null || fieldValue === "") {
+                error.addError(new Error(`The field ${field} not found`));
+                continue;
+            }
+            out[field] = fieldValue;
+        }
+        if (error.errors.length > 0) {
+            throw error;
+        }
+    }
+    static objectValidateWithArray(objs, model) {
+        if (general_validations_1.GeneralValidation.isEmpty(objs)) {
+            return;
+        }
+        const error = new custom_error_1.CustomError(``, "NOT_FOUND", 404);
+        for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i];
+            const keys = Object.keys(obj);
+            const fields = Object.keys(model);
+            const out = {};
+            for (let j = 0; j < fields.length; j++) {
+                const field = fields[j];
+                if (keys.includes(field) === false) {
+                    error.addError(new Error(`The field ${field} not found`));
+                    continue;
+                }
+                const fieldValue = obj[field] || obj[`${field}`];
+                if (fieldValue === undefined || fieldValue === null || fieldValue === "") {
+                    error.addError(new Error(`The field ${field} not found`));
+                    continue;
+                }
+                out[field] = fieldValue;
+            }
+        }
+        if (error.errors.length > 0) {
+            throw error;
+        }
+    }
 }
 exports.ObjectValidation = ObjectValidation;
 //# sourceMappingURL=object.validations.js.map

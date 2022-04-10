@@ -27,4 +27,5 @@ __exportStar(require("./utils/token.utils"), exports);
 //Validations
 __exportStar(require("./validations/general.validations"), exports);
 __exportStar(require("./validations/object.validations"), exports);
+__exportStar(require("./validations/model.validations"), exports);
 //# sourceMappingURL=index.js.map

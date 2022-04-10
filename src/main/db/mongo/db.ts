@@ -1,4 +1,4 @@
-import { MongoClient, ObjectID } from 'mongodb';
+import { MongoClient, ObjectID, ServerApiVersion } from 'mongodb';
 //const { MongoClient, ServerApiVersion } = require('mongodb');
 //const MongoClient = require('mongodb').MongoClient;
 //import { ObjectId } from 'bson';
@@ -24,7 +24,7 @@ export class MongoDb2 implements BaseDB {
                     return resolve(this.connection);
                 }
                 if (this.config && this.config.mongo && this.config.mongo.uri) {
-                    this.connection = new MongoClient(this.config.mongo.uri);
+                    this.connection = new MongoClient(this.config.mongo.uri, { serverApi: ServerApiVersion.v1 });
                     this.connection.connect();
                     resolve(this.connection);
                 } else {
