@@ -157,3 +157,8 @@ MIT
 - Repositorio en Npm: https://www.npmjs.com/~josmejia.2401
 
 **_Siempre gratis, siempre libre_**
+
+
+# cache npm
+npm cache clean --force
+npm cache verify

@@ -18,16 +18,23 @@ export class MongoDb2 implements BaseDB {
         return MongoDb2.instance;
     }
     async connect(): Promise<MongoClient> {
-        if (this.connection) {
-            return this.connection;
-        }
-        if (this.config && this.config.mongo && this.config.mongo.uri) {
-            this.connection = new MongoClient(this.config.mongo.uri);
-            await this.connection.connect();
-        } else {
-            return Promise.reject(new Error("URI NOT FOUND"));
-        }
-        return this.connection;
+        return new Promise((resolve, reject) => {
+            try {
+                if (this.connection) {
+                    return resolve(this.connection);
+                }
+                if (this.config && this.config.mongo && this.config.mongo.uri) {
+                    this.connection = new MongoClient(this.config.mongo.uri);
+                    this.connection.connect();
+                    resolve(this.connection);
+                } else {
+                    return reject(new Error("URI NOT FOUND"));
+                }
+                return this.connection;
+            } catch (error) {
+                reject(error);
+            }
+        });
     }
     async getConnection(): Promise<MongoClient> {
         return this.connect();
