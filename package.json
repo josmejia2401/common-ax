@@ -1,6 +1,6 @@
 {
   "name": "common-ax",
-  "version": "1.0.9-beta-3",
+  "version": "1.0.9-beta-5",
   "description": "Common Ax, son utilidades comunes para proyectos TypeScript o Javascript.",
   "main": "dist/app.js",
   "types": "dist/app.d.ts",
@@ -18,7 +18,7 @@
     "testCoverage": "jest --coverage --maxWorkers=50%",
     "testOnlyChanged": "jest --listTests --onlyChanged --maxWorkers=50%",
     "testSilent": "jest test/app.spec.js --silent --maxWorkers=50%",
-    "publish": "npm publish --access public"
+    "publish": "tsc -p ./tsconfig.json && npm publish --access public"
   },
   "author": "jose.mejia",
   "license": "MIT",

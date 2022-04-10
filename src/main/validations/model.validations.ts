@@ -11,13 +11,16 @@ export class ModelValidator {
     constructor(schema: Schema) {
         this.schema = schema;
     }
+    /**
+     * options:unknown - true: allow unknown
+     */
     validate(data: any, options?: { unknown: boolean }) {
         const out: any = {};
         if (Array.isArray(data) === false) {
             const keys = Object.keys(data);
             const schemaKeys = Object.keys(this.schema);
             const error = new CustomError(``, "NOT_FOUND", 404);
-            if (options?.unknown) {
+            if (!options?.unknown) {
                 const exists = keys.filter(p => schemaKeys.includes(p) === false);
                 if (exists.length > 0) {
                     error.addError(new Error(`The field ${exists.join(",")} not found`));
@@ -46,7 +49,7 @@ export class ModelValidator {
             for (let i = 0; i < schemaKeys.length; i++) {
                 const keys = Object.keys(data);
                 const error = new CustomError(``, "NOT_FOUND", 404);
-                if (options?.unknown) {
+                if (!options?.unknown) {
                     const exists = keys.filter(p => schemaKeys.includes(p) === false);
                     if (exists.length > 0) {
                         error.addError(new Error(`The field ${exists.join(",")} not found`));
