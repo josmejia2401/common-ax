@@ -11,47 +11,61 @@ export class ModelValidator {
     constructor(schema: Schema) {
         this.schema = schema;
     }
-    validate(data: any) {
+    validate(data: any, options?: { unknown: boolean }) {
         const out: any = {};
         if (Array.isArray(data) === false) {
             const keys = Object.keys(data);
-            const modelKeys = Object.keys(this.schema);
+            const schemaKeys = Object.keys(this.schema);
             const error = new CustomError(``, "NOT_FOUND", 404);
-            for (let j = 0; j < modelKeys.length; j++) {
-                const modelKey = modelKeys[j];
-                const model: Attribute = this.schema[modelKey];
-                if (model.requiered === true && keys.includes(modelKey) === false) {
-                    error.addError(new Error(`The field ${modelKey} not found`));
+            if (options?.unknown) {
+                const exists = keys.filter(p => schemaKeys.includes(p) === false);
+                if (exists.length > 0) {
+                    error.addError(new Error(`The field ${exists.join(",")} not found`));
+                    throw error;
+                }
+            }
+            for (let j = 0; j < schemaKeys.length; j++) {
+                const schemaKey = schemaKeys[j];
+                const model: Attribute = this.schema[schemaKey];
+                if (model.requiered === true && keys.includes(schemaKey) === false) {
+                    error.addError(new Error(`The field ${schemaKey} not found`));
                     continue;
                 }
-                const fieldValue = data[modelKey] || data[`${modelKey}`];
-                if (model.requiered === true  && (fieldValue === undefined || fieldValue === null || fieldValue === "")) {
-                    error.addError(new Error(`The field ${modelKey} not found`));
+                const fieldValue = data[schemaKey] || data[`${schemaKey}`];
+                if (model.requiered === true && (fieldValue === undefined || fieldValue === null || fieldValue === "")) {
+                    error.addError(new Error(`The field ${schemaKey} not found`));
                     continue;
                 }
-                out[modelKey] = fieldValue;
+                out[schemaKey] = fieldValue;
             }
             if (error.errors.length > 0) {
                 throw error;
             }
         } else {
-            const modelKeys = Object.keys(this.schema);
-            for (let i = 0; i < modelKeys.length; i++) {
+            const schemaKeys = Object.keys(this.schema);
+            for (let i = 0; i < schemaKeys.length; i++) {
                 const keys = Object.keys(data);
                 const error = new CustomError(``, "NOT_FOUND", 404);
-                for (let j = 0; j < modelKeys.length; j++) {
-                    const modelKey = modelKeys[j];
-                    const model: Attribute = this.schema[modelKey];
-                    if (model.requiered === true && keys.includes(modelKey) === false) {
-                        error.addError(new Error(`The field ${modelKey} not found`));
+                if (options?.unknown) {
+                    const exists = keys.filter(p => schemaKeys.includes(p) === false);
+                    if (exists.length > 0) {
+                        error.addError(new Error(`The field ${exists.join(",")} not found`));
+                        throw error;
+                    }
+                }
+                for (let j = 0; j < schemaKeys.length; j++) {
+                    const schemaKey = schemaKeys[j];
+                    const model: Attribute = this.schema[schemaKey];
+                    if (model.requiered === true && keys.includes(schemaKey) === false) {
+                        error.addError(new Error(`The field ${schemaKey} not found`));
                         continue;
                     }
-                    const fieldValue = data[modelKey] || data[`${modelKey}`];
+                    const fieldValue = data[schemaKey] || data[`${schemaKey}`];
                     if (fieldValue === undefined || fieldValue === null || fieldValue === "") {
-                        error.addError(new Error(`The field ${modelKey} not found`));
+                        error.addError(new Error(`The field ${schemaKey} not found`));
                         continue;
                     }
-                    out[modelKey] = fieldValue;
+                    out[schemaKey] = fieldValue;
                 }
                 if (error.errors.length > 0) {
                     throw error;
