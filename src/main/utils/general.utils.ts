@@ -10,4 +10,11 @@ export class GeneralUtil {
         } catch (error) { }
         return value;
     }
+
+    static decode(s: string) {
+        return Buffer.from(s, 'base64').toString();
+    }
+    static encode(b: string) {
+        return Buffer.from(b).toString('base64');;
+    }
 }

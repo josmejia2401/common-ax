@@ -3,10 +3,12 @@ import { MongoClient, ObjectID, ServerApiVersion } from 'mongodb';
 //const MongoClient = require('mongodb').MongoClient;
 //import { ObjectId } from 'bson';
 import { BaseDB, Config } from "../db";
+import { OperationsMongoDB } from './operations';
 export class MongoDb2 implements BaseDB {
     private static instance: any;
     protected config: Config;
     private connection: MongoClient = null as any;
+    private operations: OperationsMongoDB = null as any;
     private constructor(config: Config = {}) {
         this.config = config;
     }
@@ -50,5 +52,11 @@ export class MongoDb2 implements BaseDB {
     }
     static getObjectId(id?: string) {
         return id ? new ObjectID(id) : new ObjectID();
+    }
+    getOperation(): OperationsMongoDB {
+        if (!this.operations) {
+            this.operations = new OperationsMongoDB(this.connection);
+        }
+        return this.operations;
     }
 }

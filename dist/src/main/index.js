@@ -19,6 +19,7 @@ __exportStar(require("./db/dynamodb/model"), exports);
 __exportStar(require("./db/dynamodb/db"), exports);
 __exportStar(require("./db/dynamodb/operations"), exports);
 __exportStar(require("./db/mongo/db"), exports);
+__exportStar(require("./db/mongo/operations"), exports);
 //Dependency injection
 __exportStar(require("./di/di"), exports);
 //Exceptions

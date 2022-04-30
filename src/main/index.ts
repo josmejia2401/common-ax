@@ -3,6 +3,7 @@ export * from './db/dynamodb/model';
 export * from './db/dynamodb/db';
 export * from './db/dynamodb/operations';
 export * from './db/mongo/db';
+export * from './db/mongo/operations';
 //Dependency injection
 export * from './di/di';
 //Exceptions
