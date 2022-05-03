@@ -53,7 +53,7 @@ class TokenUtil {
         }
         return "";
     }
-    static getUserIdFromToken(authorization) {
+    static getInfoToken(authorization) {
         const tokenBase = TokenUtil.getToken(authorization);
         return TokenUtil.decodeTokenJwt(tokenBase);
     }
@@ -74,7 +74,7 @@ class TokenUtil {
     static isValidTokenWithSID(authorization, sid) {
         const tokenBase = TokenUtil.getToken(authorization);
         const infoToken = TokenUtil.decodeTokenJwt(tokenBase);
-        if (infoToken.payload.exp > new Date().getTime()) {
+        if (infoToken.payload.exp < new Date().getTime()) {
             throw new security_error_1.SecurityError("The token has expired", "UNAUTHORIZE", 401);
         }
         if (infoToken.payload.sid === sid) {
