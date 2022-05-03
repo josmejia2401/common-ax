@@ -71,6 +71,17 @@ class TokenUtil {
         }
         return true;
     }
+    static isValidTokenWithSID(authorization, sid) {
+        const tokenBase = TokenUtil.getToken(authorization);
+        const infoToken = TokenUtil.decodeTokenJwt(tokenBase);
+        if (infoToken.payload.exp > new Date().getTime()) {
+            throw new security_error_1.SecurityError("The token has expired", "UNAUTHORIZE", 401);
+        }
+        if (infoToken.payload.sid === sid) {
+            throw new security_error_1.SecurityError("sid does not correspond", "UNAUTHORIZE", 401);
+        }
+        return true;
+    }
 }
 exports.TokenUtil = TokenUtil;
 //# sourceMappingURL=token.utils.js.map

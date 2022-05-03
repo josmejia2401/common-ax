@@ -16,6 +16,8 @@ export interface TokenModel {
         name: string;
         admin: boolean,
         iss: string;
+        sid: string;
+        channel: string;
         [key: string]: any;
     };
     signature: string;
