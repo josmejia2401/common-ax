@@ -80,11 +80,11 @@ export class TokenUtil {
 
     static isValidTokenWithSID(authorization: string, sid: string): boolean | never {
         const tokenBase = TokenUtil.getToken(authorization);
-        const infoToken = TokenUtil.decodeTokenJwt(tokenBase);
+        const infoToken = TokenUtil.decodeTokenJwt(tokenBase); 
         if (infoToken.payload.exp < new Date().getTime()) {
             throw new SecurityError("The token has expired", "UNAUTHORIZE", 401);
         }
-        if (infoToken.payload.sid === sid) {
+        if (infoToken.payload.sid !== sid) {
             throw new SecurityError("sid does not correspond", "UNAUTHORIZE", 401);
         }
         return true;
