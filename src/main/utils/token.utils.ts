@@ -63,13 +63,18 @@ export class TokenUtil {
         return TokenUtil.decodeTokenJwt(tokenBase);
     }
 
-    static isValidToken(authorization: string, headers?: any): SecurityError | undefined {
+    static isValidToken(authorization: string, sourceApp: string, channel: string): boolean | never {
         const tokenBase = TokenUtil.getToken(authorization);
         const infoToken = TokenUtil.decodeTokenJwt(tokenBase);
         if (infoToken.payload.exp > new Date().getTime()) {
-            const headersx = headers || TokenUtil.corsHeader({});
-            throw new SecurityError("The token has expired", "UNAUTHORIZE", 401, headersx);
+            throw new SecurityError("The token has expired", "UNAUTHORIZE", 401);
         }
-        return;
+        if (infoToken.payload.aud === sourceApp) {
+            throw new SecurityError("Aud does not correspond", "UNAUTHORIZE", 401);
+        }
+        if (infoToken.payload.channel === channel) {
+            throw new SecurityError("Channel does not correspond", "UNAUTHORIZE", 401);
+        }
+        return true;
     }
 }

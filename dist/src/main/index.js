@@ -24,6 +24,7 @@ __exportStar(require("./db/mongo/operations"), exports);
 __exportStar(require("./di/di"), exports);
 //Exceptions
 __exportStar(require("./exceptions/custom-error"), exports);
+__exportStar(require("./exceptions/security-error"), exports);
 //Utils
 __exportStar(require("./utils/date.utils"), exports);
 __exportStar(require("./utils/general.utils"), exports);
@@ -33,4 +34,6 @@ __exportStar(require("./utils/token.utils"), exports);
 __exportStar(require("./validations/general.validations"), exports);
 __exportStar(require("./validations/object.validations"), exports);
 __exportStar(require("./validations/model.validations"), exports);
+//Security
+__exportStar(require("./security/security.models"), exports);
 //# sourceMappingURL=index.js.map

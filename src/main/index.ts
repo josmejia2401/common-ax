@@ -8,6 +8,7 @@ export * from './db/mongo/operations';
 export * from './di/di';
 //Exceptions
 export * from './exceptions/custom-error';
+export * from './exceptions/security-error';
 //Utils
 export * from './utils/date.utils';
 export * from './utils/general.utils';
@@ -17,3 +18,5 @@ export * from './utils/token.utils';
 export * from './validations/general.validations';
 export * from './validations/object.validations';
 export * from './validations/model.validations';
+//Security
+export * from './security/security.models';
