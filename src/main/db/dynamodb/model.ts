@@ -136,11 +136,12 @@ export class DynamoDBModel {
         }
         return params;
     }
-    toUpdate() {
+    toUpdate(separator = ",", keyAllowed = ["id"]) {
         const object = this.toObject();
         const params = {} as any;
         const keys = Object.keys(object);
         if (object && keys.length > 0) {
+            const keyValues: any = {};
             const expressionAttributeValues: any = {};
             const expressionAttributeNames: any = {};
             let updateExpression = "";
@@ -150,19 +151,22 @@ export class DynamoDBModel {
                 if (value === undefined || value === null || value === "") {
                     continue;
                 }
-                if (updateExpression.length > 0) {
-                    updateExpression += ` ,#${key}=:${key}`
+                if (keyAllowed.includes(key)) {
+                    keyValues[key] = value;
                 } else {
-                    if (key === 'id') {
-                        continue;
+                    if (updateExpression.length > 0) {
+                        updateExpression += ` ${separator}#${key}=:${key}`
+                    } else {
+                        if (key === 'id') {
+                            continue;
+                        }
+                        updateExpression += `#${key}=:${key}`
                     }
-                    updateExpression += `#${key}=:${key}`
+                    expressionAttributeValues[`:${key}`] = value;
+                    expressionAttributeNames[`#${key}`] = key;
                 }
-                expressionAttributeValues[`:${key}`] = value;
-                expressionAttributeNames[`#${key}`] = key;
-
             }
-            params["Key"] = { "id": object.id };
+            params["Key"] = keyValues;
             params["UpdateExpression"] = `set ${updateExpression}`;
             params["ExpressionAttributeValues"] = expressionAttributeValues;
             params["ExpressionAttributeNames"] = expressionAttributeNames;
