@@ -56,7 +56,7 @@ export class DynamoDBModel {
                 if (value === undefined || value === null || value === "") {
                     continue;
                 }
-                if (i === 0) {
+                if (keyConditionExpression.length === 0) {
                     keyConditionExpression = `#${key} = :${key}`
                 } else {
                     keyConditionExpression += ` and #${key} = :${key}`
@@ -65,6 +65,44 @@ export class DynamoDBModel {
                 expressionAttributeNames[`#${key}`] = key;
             }
             params["KeyConditionExpression"] = keyConditionExpression;
+            params["ExpressionAttributeValues"] = expressionAttributeValues;
+            params["ExpressionAttributeNames"] = expressionAttributeNames;
+        }
+        return params;
+    }
+    toQueryKey(keyAllowed = ["id"]) {
+        const object = this.toObject();
+        const params = {} as any;
+        const keys = Object.keys(object);
+        if (object && keys.length > 0) {
+            let keyConditionExpression = "";
+            const expressionAttributeValues: any = {};
+            const expressionAttributeNames: any = {};
+            let filterExpression = "";
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                const value = object[key] || object[`${key}`];
+                if (value === undefined || value === null || value === "") {
+                    continue;
+                }
+                if (keyAllowed.includes(key)) {
+                    if (keyConditionExpression.length === 0) {
+                        keyConditionExpression = `#${key} = :${key}`
+                    } else {
+                        keyConditionExpression += ` and #${key} = :${key}`
+                    }
+                } else {
+                    if (filterExpression.length === 0) {
+                        filterExpression = `#${key} = :${key}`;
+                    } else {
+                        filterExpression += ` and #${key} = :${key}`
+                    }
+                }
+                expressionAttributeValues[`:${key}`] = value;
+                expressionAttributeNames[`#${key}`] = key;
+            }
+            params["KeyConditionExpression"] = keyConditionExpression;
+            params["FilterExpression"] = filterExpression;
             params["ExpressionAttributeValues"] = expressionAttributeValues;
             params["ExpressionAttributeNames"] = expressionAttributeNames;
         }
