@@ -30,6 +30,7 @@ __exportStar(require("./utils/date.utils"), exports);
 __exportStar(require("./utils/general.utils"), exports);
 __exportStar(require("./utils/random.utils"), exports);
 __exportStar(require("./utils/token.utils"), exports);
+__exportStar(require("./utils/http.utils"), exports);
 //Validations
 __exportStar(require("./validations/general.validations"), exports);
 __exportStar(require("./validations/object.validations"), exports);

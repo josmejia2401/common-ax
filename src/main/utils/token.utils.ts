@@ -63,29 +63,11 @@ export class TokenUtil {
         return TokenUtil.decodeTokenJwt(tokenBase);
     }
 
-    static isValidToken(authorization: string, sourceApp: string, channel: string): boolean | never {
+    static isValidToken(authorization: string): boolean | never {
         const tokenBase = TokenUtil.getToken(authorization);
         const infoToken = TokenUtil.decodeTokenJwt(tokenBase);
-        if (infoToken.payload.exp > new Date().getTime()) {
+        if (new Date().getTime() > infoToken.payload.exp) {
             throw new SecurityError("The token has expired", "UNAUTHORIZE", 401);
-        }
-        if (infoToken.payload.aud === sourceApp) {
-            throw new SecurityError("Aud does not correspond", "UNAUTHORIZE", 401);
-        }
-        if (infoToken.payload.channel === channel) {
-            throw new SecurityError("Channel does not correspond", "UNAUTHORIZE", 401);
-        }
-        return true;
-    }
-
-    static isValidTokenWithSID(authorization: string, sid: string): boolean | never {
-        const tokenBase = TokenUtil.getToken(authorization);
-        const infoToken = TokenUtil.decodeTokenJwt(tokenBase); 
-        if (infoToken.payload.exp < new Date().getTime()) {
-            throw new SecurityError("The token has expired", "UNAUTHORIZE", 401);
-        }
-        if (infoToken.payload.sid !== sid) {
-            throw new SecurityError("sid does not correspond", "UNAUTHORIZE", 401);
         }
         return true;
     }
