@@ -4,50 +4,26 @@ exports.CustomError = void 0;
 class CustomError extends Error {
     constructor(message, code, httpStatus, headers) {
         super(message);
-        this.errors = [];
         this.name = "CustomError";
         this.message = message;
         this.code = code;
         this.httpStatus = httpStatus;
         this.headers = headers || {};
+        this.errors = [];
     }
     addError(error) {
         this.errors.push(error);
     }
     build() {
-        if (this.errors.length > 0) {
-            const errors1 = [];
-            this.errors.forEach((error) => errors1.push({ message: error.message }));
-            return {
-                statusCode: this.httpStatus,
-                headers: Object.assign({ "Content-Type": "application/json" }, this.headers),
-                body: JSON.stringify({
-                    "code": this.code,
-                    "message": errors1
-                })
-            };
-        }
+        const message = this.errors.length > 0 ? this.errors.map((error) => ({ message: error.message })) : this.message;
         return {
             statusCode: this.httpStatus,
+            status: this.httpStatus,
             headers: Object.assign({ "Content-Type": "application/json" }, this.headers),
-            body: JSON.stringify({
+            body: {
                 "code": this.code,
-                "message": this.message
-            })
-        };
-    }
-    buildWithoutLambda() {
-        if (this.errors.length > 0) {
-            const errors1 = [];
-            this.errors.forEach((error) => errors1.push({ message: error.message }));
-            return {
-                "code": this.code,
-                "message": errors1
-            };
-        }
-        return {
-            "code": this.code,
-            "message": this.message
+                "message": message
+            }
         };
     }
 }

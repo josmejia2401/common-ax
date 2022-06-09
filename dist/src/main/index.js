@@ -37,4 +37,6 @@ __exportStar(require("./validations/object.validations"), exports);
 __exportStar(require("./validations/model.validations"), exports);
 //Security
 __exportStar(require("./security/security.models"), exports);
+//middleware
+__exportStar(require("./middleware/index"), exports);
 //# sourceMappingURL=index.js.map

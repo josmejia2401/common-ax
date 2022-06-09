@@ -2,9 +2,8 @@ export class CustomError extends Error {
     public code: string | undefined;
     public message: string;
     public httpStatus: number | undefined;
-    public errors: any[] = [];
+    public errors: any[];
     public headers: any;
-
     constructor(message: string, code?: string, httpStatus?: number, headers?: any) {
         super(message);
         this.name = "CustomError";
@@ -12,53 +11,24 @@ export class CustomError extends Error {
         this.code = code;
         this.httpStatus = httpStatus;
         this.headers = headers || {};
+        this.errors = [];
     }
-
     addError(error: Error) {
         this.errors.push(error);
     }
-
     build() {
-        if (this.errors.length > 0) {
-            const errors1: any[] = [];
-            this.errors.forEach((error: Error) => errors1.push({ message: error.message }));
-            return {
-                statusCode: this.httpStatus,
-                headers: {
-                    "Content-Type": "application/json",
-                    ...this.headers
-                },
-                body: JSON.stringify({
-                    "code": this.code,
-                    "message": errors1
-                })
-            };
-        }
+        const message = this.errors.length > 0 ? this.errors.map((error: Error) => ({ message: error.message })) : this.message;
         return {
             statusCode: this.httpStatus,
+            status: this.httpStatus,
             headers: {
                 "Content-Type": "application/json",
                 ...this.headers
             },
-            body: JSON.stringify({
+            body: {
                 "code": this.code,
-                "message": this.message
-            })
-        };
-    }
-
-    buildWithoutLambda() {
-        if (this.errors.length > 0) {
-            const errors1: any[] = [];
-            this.errors.forEach((error: Error) => errors1.push({ message: error.message }));
-            return {
-                "code": this.code,
-                "message": errors1
-            };
-        }
-        return {
-            "code": this.code,
-            "message": this.message
+                "message": message
+            }
         };
     }
 }

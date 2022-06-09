@@ -8,28 +8,24 @@ export interface RequestEvent {
     method: string;
     body: any;
     headers: any;
-    queryStringParameters: any;
-    pathParameters: any;
+    query: any;
+    params: any;
     tokenInfo?: TokenModel;
     corsHeaders?: any;
     context?: {
         origin: string;
         host: string;
-        xForwardedFor: string;
         remoteAddress: string;
-        isAWSLambda: boolean;
     };
 };
 export interface ResponseEvent {
-    url: string;
-    method: string;
-    body: any;
+    statusCode: number;
+    status: number;
+    body: any | undefined;
     headers: any;
-    queryStringParameters: any;
-    pathParameters: any;
 };
-export type Callback = (event: RequestEvent) => any | never;
-export function buildError(error: any, corsHeaders: any, isAWSLambda: boolean) {
+export type Callback = (event: RequestEvent) => ResponseEvent | never;
+export function buildError(error: any, corsHeaders: any) {
     if (error.name === "CustomError" || error.name === "SecurityError") {
         error.headers = {
             'Content-Type': "application/json",
@@ -38,29 +34,25 @@ export function buildError(error: any, corsHeaders: any, isAWSLambda: boolean) {
     } else {
         error = new CustomError("Internal error", "INTERNAL_ERROR", 500, corsHeaders);
     }
-    if (isAWSLambda) {
-        return error.build();
-    } else {
-        return error.buildWithoutLambda();
-    }
+    return error.build();
 }
-export async function instrumentHttpRequest(event: RequestEvent, callback: any, options: {
-    isOptions: boolean,
-    method: string,
-    isSecured: boolean,
-    isAWSLambda: boolean;
-    callbackValidation?: Callback
-}): Promise<any> {
+export async function instrumentHttp(event: RequestEvent, callback: Callback, options: {
+    isOptions: boolean;
+    method: string;
+    isSecured: boolean;
+    callbackValidation?: Callback;
+}): Promise<ResponseEvent> {
     const corsHeaders = TokenUtil.corsHeader(event.headers, [options.method, "OPTIONS"]);
     try {
         if (options.isOptions) {
             return {
                 statusCode: 200,
+                status: 200,
                 headers: {
                     'Content-Type': "application/json",
                     ...corsHeaders
                 },
-            };
+            } as ResponseEvent;
         }
         const origin: string = event.headers["origin"] || event.headers["Origin"];
         if (GeneralValidation.isEmpty(origin)) {
@@ -70,15 +62,12 @@ export async function instrumentHttpRequest(event: RequestEvent, callback: any, 
         if (GeneralValidation.isEmpty(host)) {
             ObjectValidation.objectValidate({}, "host");
         }
-        const xForwardedFor: string = event.headers["X-Forwarded-For"] || event.headers["X-forwarded-for"] || "0.0.0.0";
-        const remoteAddress: string = event.headers["Remote-address"] || event.headers["Remote-Address"] || "0.0.0.0";
+        const remoteAddress: string = event.headers["X-Forwarded-For"] || event.headers["X-forwarded-for"] || event.headers["Remote-address"] || event.headers["Remote-Address"];
         event.corsHeaders = corsHeaders;
         event.context = {
             host: host,
             origin: origin,
-            xForwardedFor: xForwardedFor,
             remoteAddress: remoteAddress,
-            isAWSLambda: options.isAWSLambda,
         };
         //Secured
         if (options.isSecured === true) {
@@ -86,8 +75,8 @@ export async function instrumentHttpRequest(event: RequestEvent, callback: any, 
             if (GeneralValidation.isEmpty(authorization)) {
                 ObjectValidation.objectValidate({}, "authorization");
             }
-            event.tokenInfo = TokenUtil.getInfoToken(authorization);
             TokenUtil.isValidToken(authorization);
+            event.tokenInfo = TokenUtil.getInfoToken(authorization);
         }
         //custom validations
         if (options.callbackValidation) {
@@ -95,7 +84,6 @@ export async function instrumentHttpRequest(event: RequestEvent, callback: any, 
         }
         return callback(event);
     } catch (error) {
-        console.log("instrumentHttpRequest", error);
-        return buildError(error, corsHeaders, options.isAWSLambda);
+        return buildError(error, corsHeaders);
     }
 }

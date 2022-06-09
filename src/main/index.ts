@@ -21,3 +21,5 @@ export * from './validations/object.validations';
 export * from './validations/model.validations';
 //Security
 export * from './security/security.models';
+//middleware
+export * from './middleware/index';
