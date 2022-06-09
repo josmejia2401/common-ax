@@ -24,7 +24,7 @@ export interface ResponseEvent {
     body: any | undefined;
     headers: any;
 };
-export type Callback = (event: RequestEvent) => ResponseEvent | never;
+export type Callback = (event: RequestEvent) => Promise<ResponseEvent | never>;
 export function buildError(error: any, corsHeaders: any) {
     if (error.name === "CustomError" || error.name === "SecurityError") {
         error.headers = {
