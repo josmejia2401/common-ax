@@ -1,4 +1,5 @@
 import { GeneralUtil } from "../utils/general.utils";
+
 //import express from "express";
 class ExpressToLambdaUtil {
     /**
@@ -30,8 +31,11 @@ class ExpressToLambdaUtil {
         return routes;
     }
     static getPathFromEvent(event: any): string {
-        if (event.path) {
-            return event.path;
+        if (event && event.rawPath) {
+            return event.rawPath;
+        }
+        if (event && event.requestContext && event.requestContext.http && event.requestContext.http.path) {
+            return String(event.requestContext.http.path).toLowerCase();
         }
         if (event && event.requestContext && event.requestContext.path) {
             return event.requestContext.path;
@@ -42,14 +46,26 @@ class ExpressToLambdaUtil {
         if (event.resource) {
             return event.resource;
         }
+        if (event.requestPath) {
+            return event.requestPath;
+        }
+        if (event.path) {
+            return event.path;
+        }
         return "";
     }
     static getMethodFromEvent(event: any): string {
         if (event && event.httpMethod) {
-            return event.httpMethod;
+            return String(event.httpMethod).toLowerCase();
         }
         if (event && event.requestContext && event.requestContext.httpMethod) {
-            return event.requestContext.httpMethod;
+            return String(event.requestContext.httpMethod).toLowerCase();
+        }
+        if (event && event.requestContext && event.requestContext.http && event.requestContext.http.method) {
+            return String(event.requestContext.http.method).toLowerCase();
+        }
+        if (event && event.method) {
+            return String(event.method).toLowerCase();
         }
         return "";
     }
@@ -70,10 +86,10 @@ class RequestAWS {
             path: ExpressToLambdaUtil.getPathFromEvent(this.event),
             method: ExpressToLambdaUtil.getMethodFromEvent(this.event),
             headers: this.event.headers,
-            body: this.event.body,
-            query: this.event.queryStringParameters,
-            params: this.event.pathParameters,
-            contextAWS: this.context
+            body: GeneralUtil.anyToJson(this.event.body),
+            query: GeneralUtil.anyToJson(this.event.queryStringParameters),
+            params: GeneralUtil.anyToJson(this.event.pathParameters),
+            contextAWS: GeneralUtil.anyToJson(this.context)
         };
     }
 }
@@ -97,6 +113,10 @@ class ResponseForAws {
         this.headersValue = headersValue;
         return this;
     }
+    header(headersValue: any) {
+        this.headersValue = headersValue;
+        return this;
+    }
     end(callback?: any) {
         const response: any = {
             statusCode: this.statusCode,
@@ -117,7 +137,7 @@ class ResponseForAws {
  */
 export function middleware(app: any) {
     return async (event: any, context: any) => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
             try {
                 const newEvent = GeneralUtil.anyToJson(event);
                 const newContext = GeneralUtil.anyToJson(context);
@@ -125,21 +145,21 @@ export function middleware(app: any) {
                 const methodEvent = ExpressToLambdaUtil.getMethodFromEvent(newEvent);
                 const routesApp = ExpressToLambdaUtil.getRoutesFromApp(app);
                 const route = routesApp.filter((p: any) => p.route.path === pathEvent)[0];
-                if (route && typeof route.function === 'function' && route.route.methods[methodEvent.toLowerCase()]) {
+                if (route && typeof route.function === 'function' && route.route.methods[methodEvent]) {
                     const req = new RequestAWS(newEvent, newContext);
                     const response = new ResponseForAws((data: any) => resolve(data));
-                    route.function(req, response);
+                    route.function.call(undefined, req.build(), response);
                 } else {
                     throw new Error('Unsupported function');
                 }
             } catch (error: any) {
-                const response = new ResponseForAws();
-                response.send(error.message);
-                response.status(500);
-                response.headers({
+                const response = new ResponseForAws((data: any) => resolve(data));
+                response.send({ code: "NOT_IMPLEMENTED", message: error.message });
+                response.status(501);
+                response.header({
                     "Content-Type": "application/json"
                 });
-                response.end((data: any) => reject(data));
+                response.end();
             }
         });
     }
