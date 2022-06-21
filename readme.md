@@ -162,3 +162,13 @@ MIT
 # cache npm
 npm cache clean --force
 npm cache verify
+
+npm install will install both "dependencies" and "devDependencies"
+
+npm install --production will only install "dependencies"
+
+npm install --dev will only install "devDependencies"
+
+If you have already installed all your dependencies, and you want to avoid having to download your production packages from NPM again, you can simply type:
+
+npm prune --production
