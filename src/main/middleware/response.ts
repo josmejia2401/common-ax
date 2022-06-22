@@ -11,6 +11,10 @@ export class ResponseBuild {
         this.value = value;
         return this;
     }
+    sendAsString(value: any) {
+        this.value = JSON.stringify(value);
+        return this;
+    }
     status(statusCode: number) {
         this.statusCode = statusCode;
         return this;
