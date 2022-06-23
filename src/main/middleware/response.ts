@@ -38,5 +38,6 @@ export class ResponseBuild {
         } else if (this.callback) {
             this.callback(response);
         }
+        return response;
     }
 }
