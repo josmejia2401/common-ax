@@ -1,4 +1,4 @@
-import { GeneralUtil } from "../utils/general.utils";
+import { GeneralUtil } from "../utils/general.util";
 import { getMethodFromEvent, getPathFromEvent, getRoutesFromApp } from "./helpers";
 import { RequestFromAWS } from "./request/request-aws";
 import { ResponseBuild } from "./response";

@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { BaseDB, Config } from "../db";
 import { OperationsDynamoDB } from "./operations";
-import { GeneralValidation } from "../../validations/general.validations";
+import { GeneralValidation } from "../../validations/general.validation";
 // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/loading-node-credentials-shared.html
 export class DynamoDb implements BaseDB {
     private static instance: any;

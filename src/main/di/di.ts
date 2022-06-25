@@ -1,71 +1,60 @@
-export class ScopeInjector {
-    static SINGLETON = 0;
-    static REQUEST = 1;
-    static SESSION = 2;
+"use strict";
+class ScopeInjector {
+    static readonly SINGLETON = 0;
+    static readonly REQUEST = 1;
+    static readonly SESSION = 2;
 }
-export interface Clazz {
+
+export interface InstaceItem {
     key: string;
+    instance: any;
     scope: ScopeInjector;
-    instance?: any;
     clazz?: any;
-    params?: any;
 }
-export class Injector {
-    private readonly instances: Clazz[] = [];
-    private static readonly instancesStatic: Clazz[] = [];
-    registerAuto(key: string, clazz: any, scope: ScopeInjector, ...params: any[]) {
-        const result = this.instances.filter((p) => p.key === key)[0];
+/*export interface Instance {
+    [key: string]: InstaceItem;
+}*/
+class Injector {
+
+    private instances: InstaceItem[];
+    constructor() {
+        this.instances = [];
+    }
+
+    register<U>(key: string, instance: any, scope: ScopeInjector, clazz?: U): Injector | never {
+        const result = this.instances.filter((p: InstaceItem) => p.key === key)[0];
         if (result) {
             throw new Error("instance has already been created");
         }
-        this.instances.push({ key, clazz, scope, params });
+        this.instances.push({ key, instance, scope, clazz });
+        return this;
     }
-    register(key: string, instance: any, scope: ScopeInjector) {
-        const result = this.instances.filter((p) => p.key === key)[0];
-        if (result) {
-            throw new Error("instance has already been created");
-        }
-        this.instances.push({ key, instance, scope });
-    }
-    get(key: string) {
+
+    get<U>(key: string): U | never {
         let index = this.instances.findIndex((p) => p.key === key);
         if (index >= 0) {
+            const allInstances = this.getAll();
             const result = this.instances[index];
             if (result.scope === ScopeInjector.REQUEST) {
-                return new result.clazz(result.params);
+                return new result.clazz(allInstances) as U;
             } else if (result.scope === ScopeInjector.SESSION) {
                 if (!result.instance) {
-                    result.instance = new result.clazz(result.params);
+                    result.instance = new result.clazz(allInstances) as U;
                 }
                 this.instances[index] = result;
                 return result.instance;
             }
         }
-        index = Injector.instancesStatic.findIndex((p) => p.key === key);
-        if (index >= 0) {
-            const result = Injector.instancesStatic[index];
-            if (result.scope === ScopeInjector.SINGLETON) {
-                if (!result.instance) {
-                    result.instance = new result.clazz(result.params);
-                }
-                Injector.instancesStatic[index] = result;
-                return result.instance;
-            }
-        }
         throw new Error("instance does not exist");
     }
+
     getAll() {
         const i = {} as any;
-        Injector.instancesStatic.forEach(item => {
-            i["key"] = item.key;
-            i["value"] = item.instance || this.get(item.key);
-        });
         this.instances.forEach(item => {
-            i["key"] = item.key;
-            i["value"] = item.instance || this.get(item.key);
+            i[item.key] = item.instance || this.get(item.key);
         });
         return i;
     }
 }
-// createInjector().provideClass("TOKEN_INSERT_SERVICE", Object, ScopeInjector.SINGLETON);
-// console.log("t1", createInjector().resolve("TOKEN_INSERT_SERVICE"));
+
+export { Injector }

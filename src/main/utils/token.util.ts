@@ -1,5 +1,5 @@
 import { TokenModel } from "../security/security.models";
-import { GeneralUtil } from "./general.utils";
+import { GeneralUtil } from "./general.util";
 import { SecurityError } from "../exceptions/security-error";
 
 export class TokenUtil {

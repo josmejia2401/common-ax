@@ -10,14 +10,13 @@ export * from './di/di';
 export * from './exceptions/custom-error';
 export * from './exceptions/security-error';
 //Utils
-export * from './utils/date.utils';
-export * from './utils/general.utils';
-export * from './utils/random.utils';
-export * from './utils/token.utils';
+export * from './utils/date.util';
+export * from './utils/general.util';
+export * from './utils/random.util';
+export * from './utils/token.util';
 //Validations
-export * from './validations/general.validations';
-export * from './validations/object.validations';
-export * from './validations/model.validations';
+export * from './validations/general.validation';
+export * from './validations/object.validation';
 //Security
 export * from './security/security.models';
 //middleware

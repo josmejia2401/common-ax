@@ -1,3 +1,5 @@
+import { ResponseEvent } from "../middleware/models/response";
+
 export class CustomError extends Error {
     public code: string | undefined;
     public message: string;
@@ -16,10 +18,10 @@ export class CustomError extends Error {
     addError(error: Error) {
         this.errors.push(error);
     }
-    build() {
+    build(): ResponseEvent {
         const message = this.errors.length > 0 ? this.errors.map((error: Error) => ({ message: error.message })) : this.message;
         return {
-            statusCode: this.httpStatus,
+            statusCode: this.httpStatus || 500,
             status: this.httpStatus,
             headers: {
                 "Content-Type": "application/json",

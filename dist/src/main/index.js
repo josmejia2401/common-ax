@@ -26,14 +26,13 @@ __exportStar(require("./di/di"), exports);
 __exportStar(require("./exceptions/custom-error"), exports);
 __exportStar(require("./exceptions/security-error"), exports);
 //Utils
-__exportStar(require("./utils/date.utils"), exports);
-__exportStar(require("./utils/general.utils"), exports);
-__exportStar(require("./utils/random.utils"), exports);
-__exportStar(require("./utils/token.utils"), exports);
+__exportStar(require("./utils/date.util"), exports);
+__exportStar(require("./utils/general.util"), exports);
+__exportStar(require("./utils/random.util"), exports);
+__exportStar(require("./utils/token.util"), exports);
 //Validations
-__exportStar(require("./validations/general.validations"), exports);
-__exportStar(require("./validations/object.validations"), exports);
-__exportStar(require("./validations/model.validations"), exports);
+__exportStar(require("./validations/general.validation"), exports);
+__exportStar(require("./validations/object.validation"), exports);
 //Security
 __exportStar(require("./security/security.models"), exports);
 //middleware

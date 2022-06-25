@@ -1,6 +1,6 @@
-import { TokenUtil } from "../utils/token.utils";
-import { GeneralValidation } from "../validations/general.validations";
-import { ObjectValidation } from "../validations/object.validations";
+import { TokenUtil } from "../utils/token.util";
+import { GeneralValidation } from "../validations/general.validation";
+import { ObjectValidation } from "../validations/object.validation";
 import { RequestEvent } from "./models/request";
 export const validateRequest = (request: RequestEvent): RequestEvent => {
     const corsHeaders = TokenUtil.corsHeader(request.headers, [request.method, "OPTIONS"]);

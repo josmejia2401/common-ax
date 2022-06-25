@@ -1,4 +1,4 @@
-import { GeneralUtil } from "../../utils/general.utils";
+import { GeneralUtil } from "../../utils/general.util";
 import { RequestEvent } from "../models/request";
 import { RequestBase } from "./request.base";
 export class RequestFromAWS implements RequestBase<RequestEvent> {

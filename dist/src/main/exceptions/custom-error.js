@@ -17,9 +17,12 @@ class CustomError extends Error {
     build() {
         const message = this.errors.length > 0 ? this.errors.map((error) => ({ message: error.message })) : this.message;
         return {
-            statusCode: this.httpStatus,
+            statusCode: this.httpStatus || 500,
             status: this.httpStatus,
-            headers: Object.assign({ "Content-Type": "application/json" }, this.headers),
+            headers: {
+                "Content-Type": "application/json",
+                ...this.headers
+            },
             body: {
                 "code": this.code,
                 "message": message
