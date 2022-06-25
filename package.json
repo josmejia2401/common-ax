@@ -1,6 +1,6 @@
 {
   "name": "common-ax",
-  "version": "1.0.11-beta-14",
+  "version": "1.0.11-beta-15",
   "description": "Common Ax, son utilidades comunes para proyectos TypeScript o Javascript.",
   "main": "dist/app.js",
   "types": "dist/app.d.ts",

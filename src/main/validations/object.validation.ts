@@ -98,7 +98,6 @@ export class ObjectValidation {
         }
     }
 
-
     static objectValidateWithArray(objs: any[], model: any): any {
         if (GeneralValidation.isEmpty(objs)) {
             return;
@@ -129,7 +128,7 @@ export class ObjectValidation {
         }
     }
 
-    validateSchema(data: any, schema: Schema, options?: { unknown: boolean }) {
+    static validateSchema(data: any, schema: Schema, options?: { unknown: boolean }) {
         const out: any = {};
         if (Array.isArray(data) === false) {
             const keys = Object.keys(data);
