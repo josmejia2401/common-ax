@@ -7,6 +7,9 @@ export class GeneralValidation {
         if (Array.isArray(value) === true) {
             return value.length === 0;
         }
+        if (Object.keys(value).length === 0) {
+            return true;
+        }
         return false;
     }
 }

@@ -1,3 +1,4 @@
+import { GeneralValidation } from "../../validations/general.validation";
 import { GeneralUtil } from "../../utils/general.util";
 import { RequestEvent } from "../models/request";
 import { RequestBase } from "./request.base";
@@ -52,7 +53,7 @@ export class RequestFromAWS implements RequestBase<RequestEvent> {
      * @returns express.Request
      */
     build(): RequestEvent {
-        return {
+        const result = {
             path: this.getPathFromEvent(this.event),
             method: this.getMethodFromEvent(this.event),
             headers: this.event.headers,
@@ -61,5 +62,12 @@ export class RequestFromAWS implements RequestBase<RequestEvent> {
             params: GeneralUtil.anyToJson(this.event.pathParameters),
             context: GeneralUtil.anyToJson(this.context)
         }
+        if (GeneralValidation.isEmpty(result.params)) {
+            result.params = GeneralUtil.anyToJson(this.event.path);
+        }
+        if (GeneralValidation.isEmpty(result.query)) {
+            result.query = GeneralUtil.anyToJson(this.event.query);
+        }
+        return result;
     }
 }
