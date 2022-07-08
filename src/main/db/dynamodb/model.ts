@@ -1,4 +1,7 @@
 'use strict';
+
+import { GeneralValidation } from "../../validations/general.validation";
+
 export class DynamoDBModel {
     toObject() {
         const out: any = {};
@@ -64,9 +67,15 @@ export class DynamoDBModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
-            params["KeyConditionExpression"] = keyConditionExpression;
-            params["ExpressionAttributeValues"] = expressionAttributeValues;
-            params["ExpressionAttributeNames"] = expressionAttributeNames;
+            if (!GeneralValidation.isEmpty(keyConditionExpression)) {
+                params["KeyConditionExpression"] = keyConditionExpression;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeValues)) {
+                params["ExpressionAttributeValues"] = expressionAttributeValues;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeNames)) {
+                params["ExpressionAttributeNames"] = expressionAttributeNames;
+            }
         }
         return params;
     }
@@ -101,10 +110,18 @@ export class DynamoDBModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
-            params["KeyConditionExpression"] = keyConditionExpression;
-            params["FilterExpression"] = filterExpression;
-            params["ExpressionAttributeValues"] = expressionAttributeValues;
-            params["ExpressionAttributeNames"] = expressionAttributeNames;
+            if (!GeneralValidation.isEmpty(keyConditionExpression)) {
+                params["KeyConditionExpression"] = keyConditionExpression;
+            }
+            if (!GeneralValidation.isEmpty(filterExpression)) {
+                params["FilterExpression"] = filterExpression;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeValues)) {
+                params["ExpressionAttributeValues"] = expressionAttributeValues;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeNames)) {
+                params["ExpressionAttributeNames"] = expressionAttributeNames;
+            }
         }
         return params;
     }
@@ -130,9 +147,15 @@ export class DynamoDBModel {
                 expressionAttributeValues[`:${key}`] = value;
                 expressionAttributeNames[`#${key}`] = key;
             }
-            params["FilterExpression"] = filterExpresion;
-            params["ExpressionAttributeValues"] = expressionAttributeValues;
-            params["ExpressionAttributeNames"] = expressionAttributeNames;
+            if (!GeneralValidation.isEmpty(filterExpresion)) {
+                params["FilterExpression"] = filterExpresion;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeValues)) {
+                params["ExpressionAttributeValues"] = expressionAttributeValues;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeNames)) {
+                params["ExpressionAttributeNames"] = expressionAttributeNames;
+            }
         }
         return params;
     }
@@ -166,10 +189,18 @@ export class DynamoDBModel {
                     expressionAttributeNames[`#${key}`] = key;
                 }
             }
-            params["Key"] = keyValues;
-            params["UpdateExpression"] = `set ${updateExpression}`;
-            params["ExpressionAttributeValues"] = expressionAttributeValues;
-            params["ExpressionAttributeNames"] = expressionAttributeNames;
+            if (!GeneralValidation.isEmpty(keyValues)) {
+                params["Key"] = keyValues;
+            }
+            if (!GeneralValidation.isEmpty(updateExpression)) {
+                params["UpdateExpression"] = `set ${updateExpression}`;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeValues)) {
+                params["ExpressionAttributeValues"] = expressionAttributeValues;
+            }
+            if (!GeneralValidation.isEmpty(expressionAttributeNames)) {
+                params["ExpressionAttributeNames"] = expressionAttributeNames;
+            }
         }
         return params;
     }
