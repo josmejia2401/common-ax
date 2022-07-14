@@ -6,12 +6,13 @@ export class OperationsDynamoDB implements OperationDB {
     constructor(connection: DynamoDBClient) {
         this.connection = connection;
     }
-    insert(tableName: string, payload: any): any {
+    insert(tableName: string, payload: any, options?: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
                     TableName: tableName,
                     Item: payload,
+                    ...options
                 };
                 this.connection.send(new PutItemCommand(params), (err: Error, data: any) => {
                     if (err) {
@@ -25,13 +26,14 @@ export class OperationsDynamoDB implements OperationDB {
             }
         });
     }
-    update(tableName: string, payload: any): any {
+    update(tableName: string, payload: any, options?: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
                     TableName: tableName,
                     ReturnValues: "UPDATED_NEW",
-                    ...payload
+                    ...payload,
+                    ...options
                 };
                 this.connection.send(new UpdateItemCommand(params), (err: Error, data: any) => {
                     if (err) {
@@ -45,12 +47,13 @@ export class OperationsDynamoDB implements OperationDB {
             }
         });
     }
-    delete(tableName: string, payload: any): any {
+    delete(tableName: string, payload: any, options?: any): any {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
                     TableName: tableName,
-                    ...payload
+                    ...payload,
+                    ...options
                 };
                 this.connection.send(new DeleteItemCommand(params), (err: Error, data: any) => {
                     if (err) {
@@ -64,12 +67,13 @@ export class OperationsDynamoDB implements OperationDB {
             }
         });
     }
-    findById(tableName: string, payload: any): Promise<any> {
+    findById(tableName: string, payload: any, options?: any): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
                     TableName: tableName,
-                    ...payload
+                    ...payload,
+                    ...options
                 };
                 this.connection.send(new QueryCommand(params), (err: Error, data: any) => {
                     if (err) {
@@ -101,11 +105,15 @@ export class OperationsDynamoDB implements OperationDB {
             }
         });
     }
-    find(tableName: string, payload: any): Promise<any[]> {
+    find(tableName: string, payload: any, options?: any): Promise<any[]> {
         return new Promise((resolve, reject) => {
             try {
-                payload.TableName = tableName;
-                this.connection.send(new ScanCommand(payload), (err: Error, data: any) => {
+                const params = {
+                    TableName: tableName,
+                    ...payload,
+                    ...options
+                };
+                this.connection.send(new ScanCommand(params), (err: Error, data: any) => {
                     if (err) {
                         reject(err);
                     } else {
@@ -135,11 +143,12 @@ export class OperationsDynamoDB implements OperationDB {
             }
         });
     }
-    findAll(tableName: string): Promise<any[]> {
+    findAll(tableName: string, options?: any): Promise<any[]> {
         return new Promise((resolve, reject) => {
             try {
                 const params = {
                     TableName: tableName,
+                    ...options
                 };
                 this.connection.send(new ScanCommand(params), (err: Error, data: any) => {
                     if (err) {
