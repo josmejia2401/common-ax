@@ -1,5 +1,6 @@
 //const https = require('https');
 import * as https from "https";
+import { SecurityError } from "../exceptions/security-error";
 import { GeneralUtil } from "../utils/general.util";
 
 export function requestApi(options: {
@@ -12,10 +13,8 @@ export function requestApi(options: {
 }, body?: any) {
     return new Promise((resolve, reject) => {
         const request = https.request(options, (res) => {
-            if (res.statusCode !== 200) {
-                //console.error(`Did not get an OK from the server. Code: ${res.statusCode} ${res.statusMessage}`);
+            if (res.statusCode !== 200 && res.statusCode !== 201) {
                 res.resume();
-                //return;
             }
             let data = '';
             res.on('data', (chunk) => {
@@ -25,7 +24,7 @@ export function requestApi(options: {
                 const dataParsed = GeneralUtil.anyToJson(data);
                 if (res.statusCode && res.statusCode >= 400) {
                     console.error(`Did not get an OK from the server. Code: ${res.statusCode} ${res.statusMessage} ${JSON.stringify(dataParsed)}`);
-                    reject(dataParsed);
+                    reject(new SecurityError(dataParsed.code, dataParsed.message, res.statusCode));
                     return;
                 }
                 resolve(dataParsed);
