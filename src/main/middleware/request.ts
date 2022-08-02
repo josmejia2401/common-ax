@@ -32,7 +32,7 @@ export const validateRequestAll = async (request: RequestEvent, options: {
     host: string;
     path: string;
     method: string;
-    headers: any,
+    headers?: any,
     body?: any;
 }): Promise<RequestEvent> => {
     const corsHeaders = TokenUtil.corsHeader(request.headers, [request.method, "OPTIONS"]);
@@ -56,9 +56,10 @@ export const validateRequestAll = async (request: RequestEvent, options: {
     TokenUtil.isValidToken(authorization);
     request.other.tokenInfo = TokenUtil.getInfoToken(authorization);
     const response: any = await requestApi({
-        headers: options.headers || {
+        headers: {
             Authorization: authorization,
             Origin: origin,
+            ...options.headers,
         },
         host: options.host,
         method: options.method || "POST",
